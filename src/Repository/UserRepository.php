@@ -47,4 +47,32 @@ class UserRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findListAdvert(User $user)
+    {
+        $dql= "SELECT q,s
+                FROM App\Entity\Advert q
+                JOIN q.user s
+                where q.user= :user
+                 ORDER BY q.id DESC";
+        $query = $this->getEntityManager()->createQuery($dql);
+        $query->setParameter(":user",$user);
+        $query->setMaxResults(200);
+        $question= $query->getResult();
+        return $question;
+    }
+
+    public function findListMessage(User $user)
+    {
+        $dql= "SELECT q,s
+                FROM App\Entity\Messages q
+                JOIN q.user s
+                where q.user= :user
+                 ORDER BY q.id DESC";
+        $query = $this->getEntityManager()->createQuery($dql);
+        $query->setParameter(":user",$user);
+        $query->setMaxResults(200);
+        $question= $query->getResult();
+        return $question;
+    }
 }

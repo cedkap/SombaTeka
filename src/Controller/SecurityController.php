@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Advert;
 use App\Entity\User;
 use App\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -76,4 +77,50 @@ class SecurityController extends AbstractController
 
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
     }*/
+
+    // lister les messages de l'utilisateur
+    /**
+     * @Route(
+     *     "/Moncompte",
+     *     name="user_list",
+     *      methods={"GET"}
+     *     )
+     */
+    public function list()
+    {
+
+        //on recuperer les parametre du de l'utlisateur X
+        $Userpar =$this->getUser();
+
+        //Question du l'utilisateur X
+        $userAdvertRepository = $this->getDoctrine()->getRepository(User::class);
+        //on recuperer les parametre du de l'utlisateur X
+        $userAdvert = $userAdvertRepository->findListAdvert($Userpar);
+
+        //Message du l'utilisateur X
+        /*$UserMessageRepository = $this->getDoctrine()->getRepository(User::class);
+        $userMessage = $UserMessageRepository->findListMessage($Userpar);*/
+
+        //
+
+
+
+        return $this->render('security/moncompte.html.twig',['userAdvert'=>$userAdvert]);
+    }
+
+    // Supprimer un element
+    /**
+     * @Route(
+     *     "/Supprimer/{{id}}",
+     *     name="user_delete", requirements ={"id":"\d+"}
+     *      ,methods={"GET"}
+     *     )
+     */
+    public function deleteAdvert($id){
+        $em = $this->getDoctrine()->getManager();
+        $obj = $em->getRepository(Advert::class)->find($id);
+        $em->remove($obj);
+        $em->flush();
+        return $this->redirect($this->generateUrl('user_list'));
+    }
 }

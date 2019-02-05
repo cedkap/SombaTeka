@@ -77,10 +77,7 @@ class Advert
      */
     private $messages;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="adverts")
-     */
-    private $User;
+
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Region", inversedBy="adverts")
@@ -91,6 +88,11 @@ class Advert
      * @ORM\ManyToOne(targetEntity="App\Entity\Categorie", inversedBy="adverts")
      */
     private $Categorie;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="adverts")
+     */
+    private $user;
 
     public function __construct()
     {
@@ -217,17 +219,7 @@ class Advert
         return $this;
     }
 
-    public function getUser(): ?User
-    {
-        return $this->User;
-    }
 
-    public function setUser(?User $User): self
-    {
-        $this->User = $User;
-
-        return $this;
-    }
 
     public function getRegion(): ?Region
     {
@@ -249,6 +241,18 @@ class Advert
     public function setCategorie(?Categorie $Categorie): self
     {
         $this->Categorie = $Categorie;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

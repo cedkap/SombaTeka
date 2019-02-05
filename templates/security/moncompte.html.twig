@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+
+    <!-- Title Page -->
+    <section class="bg-title-page p-t-40 p-b-50 flex-col-c-m" style="background-image: url(images/heading-pages-01.jpg);">
+        <h2 class="l-text2 t-center">
+            Cart
+        </h2>
+    </section>
+
+    <!-- Cart -->
+    <section class="cart bgwhite p-t-70 p-b-100">
+        <div class="container">
+            <!-- Cart item -->
+            <div class="container-table-cart pos-relative">
+                <div class="wrap-table-shopping-cart bgwhite">
+                    <table class="table-shopping-cart">
+                        <tr class="table-head">
+                            <th class="column-1"></th>
+                            <th class="column-2">Product</th>
+                            <th class="column-3">Price</th>
+                            <th class="column-4 p-l-70">Quantity</th>
+                            <th class="column-5">Total</th>
+                        </tr>
+                        {% for userAdverts in userAdvert %}
+                        <tr class="table-row">
+
+                            <td class="column-1">
+                                <div class="cart-img-product b-rad-4 o-f-hidden">
+                                    <img src="{{ asset('uploads/brochures/' ~ userAdverts.Image) }}" alt="">
+
+                                </div>
+                            </td>
+                            <td class="column-2">{{ userAdverts.Name}}t</td>
+                            <td class="column-3">{{ userAdverts.Prix}} {{ userAdverts.Devise}}</td>
+                            <td class="column-4">
+
+                            </td>
+                            <td class="column-5">
+                                <a href="{{ path('user_delete',{'id':userAdverts.id}) }}" class="block2-name dis-block s-text3 p-b-5">
+                                    Supprimer
+                                </a>
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+
+
+                    </table>
+                </div>
+            </div>
+
+            <div class="flex-w flex-sb-m p-t-25 p-b-25 bo8 p-l-35 p-r-60 p-lr-15-sm">
+
+            </div>
+
+
+
+{% endblock %}

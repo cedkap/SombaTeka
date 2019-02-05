@@ -9,6 +9,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Messages
 {
+    public function __toString()
+    {
+        /*utilisé */
+        return $this->getTittle();
+    }
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -26,10 +31,7 @@ class Messages
      */
     private $Advert;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="messages")
-     */
-    private $User;
+
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -65,17 +67,7 @@ class Messages
         return $this;
     }
 
-    public function getUser(): ?User
-    {
-        return $this->User;
-    }
 
-    public function setUser(?User $User): self
-    {
-        $this->User = $User;
-
-        return $this;
-    }
 
     public function getDescription(): ?string
     {
