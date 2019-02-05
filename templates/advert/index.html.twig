@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <!-- New Product -->
+    <section class="newproduct bgwhite p-t-45 p-b-105">
+        <div class="container">
+            <!-- New Product -->
+                    <h1>Inscription</h1>
+                    {{ form_start(advertForm) }}
+                    {{ form_widget(advertForm) }}
+                     {{ form_row(advertForm) }}
+                    <button class="btn btn-success">Inscription</button>
+                    {{ form_end(advertForm) }}
+                    <br>
+                    <br>
+                </div>
+        </div>
+
+
+    </section>
+
+
+{% endblock %}
