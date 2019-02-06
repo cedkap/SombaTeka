@@ -3,7 +3,7 @@
 {% block content %}
 
     <!-- Title Page -->
-    <section class="bg-title-page p-t-50 p-b-40 flex-col-c-m" style="background-image: url(images/heading-pages-02.jpg);">
+    <section class="bg-title-page p-t-50 p-b-40 flex-col-c-m" style="background-image: url('{{ asset('images/heading-pages-02.jpg')}}');">
         <h2 class="l-text2 t-center">
             Women
         </h2>
@@ -26,34 +26,19 @@
 
                         <ul class="p-b-54">
                             <li class="p-t-4">
-                                <a href="#" class="s-text13 active1">
-                                    All
+                                <a href="{{ path('annonces_list') }}" class="s-text13 active1">
+                                    Toutes les annonces
                                 </a>
                             </li>
-
+                            {% for categories in categorie %}
                             <li class="p-t-4">
-                                <a href="#" class="s-text13">
-                                    Women
+                                <a href="{{ path('annonce_region',{'id':categories.id}) }}" class="s-text13">
+                                    {{ categories.Name}}
                                 </a>
                             </li>
+                            {% endfor %}
 
-                            <li class="p-t-4">
-                                <a href="#" class="s-text13">
-                                    Men
-                                </a>
-                            </li>
 
-                            <li class="p-t-4">
-                                <a href="#" class="s-text13">
-                                    Kids
-                                </a>
-                            </li>
-
-                            <li class="p-t-4">
-                                <a href="#" class="s-text13">
-                                    Accesories
-                                </a>
-                            </li>
                         </ul>
 
                         <!--  -->
@@ -141,13 +126,20 @@
                     <!--  -->
                     <div class="flex-sb-m flex-w p-b-35">
                         <div class="flex-w">
-                            <div class="rs2-select2 bo4 of-hidden w-size12 m-t-5 m-b-5 m-r-10">
-                                <select class="selection-2" name="sorting">
-                                    <option>Default Sorting</option>
-                                    <option>Popularity</option>
-                                    <option>Price: low to high</option>
-                                    <option>Price: high to low</option>
-                                </select>
+                            <div class="container">
+                                <form>
+
+                                    <label class="radio-inline">
+                                        <input type="radio" name="optradio" checked>Option 1
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="optradio">Option 2
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="optradio">Option 3
+                                    </label>
+
+                                </form>
                             </div>
 
                             <div class="rs2-select2 bo4 of-hidden w-size12 m-t-5 m-b-5 m-r-10">
@@ -205,9 +197,10 @@
                     </div>
 
                     <!-- Pagination -->
-                    <div class="pagination flex-m flex-w p-t-26">
-                        <a href="#" class="item-pagination flex-c-m trans-0-4 active-pagination">1</a>
-                        <a href="#" class="item-pagination flex-c-m trans-0-4">2</a>
+                    <div class="class="item-pagination flex-c-m trans-0-4 active-pagination">
+
+                        {{ knp_pagination_render(advert) }}
+
                     </div>
                 </div>
             </div>

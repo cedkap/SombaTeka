@@ -47,4 +47,104 @@ class AdvertRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findListQuestionQB()
+    {
+        $qb =$this->createQueryBuilder('App\Entity\Advert q');
+        $qb->andWhere('q.status = :status');
+        $qb->orderBy('q.id', 'DESC');
+        $qb->addSelect('s');
+        $qb->setParameter('status','1');
+        $qb->setFirstResult(0);
+        $qb->setMaxResults(200);
+        $query = $qb->getQuery();
+        $question = $query->getResult();
+        return $question;
+    }
+
+    /**
+     * Par region
+     * @param Region $region
+     * @return mixed
+     */
+
+    public function findListRegion(Region $region)
+    {
+       // select * from advert, region where advert.region_id =region.id
+        $dql= "SELECT q,s
+                FROM App\Entity\Advert q
+                JOIN q.Region s
+                where q.Region= :Region
+                 ORDER BY q.id DESC";
+        $query = $this->getEntityManager()->createQuery($dql);
+        $query->setParameter(":Region",$region);
+        $query->setMaxResults(200);
+        $question= $query->getResult();
+        return $question;
+    }
+
+    public function findByRegionn($id)
+    {
+        // On passe par le QueryBuilder vide de l'EntityManager pour l'exemple
+        $result = $this->createQueryBuilder('a')
+            ->select('a')
+            ->where('IDENTITY(a.Region) = :id')
+            ->orWhere('IDENTITY(a.Categorie) = :id')
+            ->orWhere('a.Prix > :purchasePrize')
+            ->setParameter( ':purchasePrize', 1000)
+            ->setParameter('id', $id)
+            ->orderBy('a.id', 'DESC');
+        return $result->getQuery()
+            ->getResult();
+    }
+
+    public function findBySearch($idannonce=null,$idcat=null)
+    {
+        // On passe par le QueryBuilder vide de l'EntityManager pour l'exemple
+        $result = $this->createQueryBuilder('a')
+            ->select('a')
+            ->where('IDENTITY(a.Region) = :id')
+             ->setParameter('id', $idannonce)
+           // ->andWhere('a.Prix > :purchasePrize')
+          //  ->setParameter( ':purchasePrize', 1000)
+
+            ->orderBy('a.id', 'DESC');
+        if ($idcat){
+            $result->andWhere('IDENTITY(a.Categorie) = :id')->setParameter('id', $idcat);
+        }
+        return $result->getQuery()
+            ->getResult();
+    }
+
+    public function findByCategorie($id)
+    {
+        // On passe par le QueryBuilder vide de l'EntityManager pour l'exemple
+        $result = $this->createQueryBuilder('a')
+            ->select('a')
+            ->where('IDENTITY(a.Categorie) = :id')
+
+            ->setParameter('id', $id)
+            ->orderBy('a.id', 'DESC');
+        return $result->getQuery()
+            ->getResult();
+    }
+
+
+
+    /**
+     * fetches Products that are more expansive than the given price
+     *
+     * @param int $price
+     * @return array
+     */
+    public function findProductsExpensiveThan($prix)
+    {
+        $q = $this->createQueryBuilder('p')
+            ->where('p.Prix > :purchasePrize')
+            ->setParameter('purchasePrize', $prix)
+            ->getQuery();
+
+        $q->getResult();
+    }
+
 }

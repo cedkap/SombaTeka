@@ -3,18 +3,20 @@
 namespace App\Controller;
 
 use App\Entity\Advert;
+use App\Entity\Categorie;
 use App\Entity\Messages;
 use App\Form\AdvertType;
 use App\Form\MessageType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
-
-
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 
-class AdvertController extends AbstractController
+
+class AdvertController extends Controller
 {
     /**
      * @Route("/advert", name="advert")
@@ -74,6 +76,7 @@ class AdvertController extends AbstractController
             return $this->redirectToRoute('home');
         }
 
+
         return $this->render('advert/index.html.twig',['advertForm'=>$advertForm->createView()]);
     }
 
@@ -104,7 +107,7 @@ class AdvertController extends AbstractController
         //creation de l'association
         $message->setAdvert($advert);
         //relation avec User
-        $message->setUser($this->getUser());
+        //$message->setUser($this->getUser());
         //creation des formulaire
         $messageForm = $this->createForm(MessageType::class,$message);
         //$questionForm  = $this->createForm(QuestionType::class,$question);
@@ -133,13 +136,142 @@ class AdvertController extends AbstractController
      *     )
      */
 
-    public function list()
+    public function list(Request $request)
     {
         //select * from question where status = 'deting' order by supports desc limit 1000
         // $questionRepository = $this->getDoctrine()->getRepository(Question::class);
         $advertRepository = $this->getDoctrine()->getRepository(Advert::class);
-        $advert = $advertRepository->findAll();
+        $advert = $advertRepository->findBy(
+            ['Status' => '1'], //where
+            ['id' => 'DESC'],// order by
+            1000,//limit
+            0
+        );
+
+        $categoriRepository = $this->getDoctrine()->getRepository(Categorie::class);
+        $categorie = $categoriRepository->findAll();
+
         //$question = $questionRepository->findAll();
-        return $this->render('advert/list.html.twig',['advert'=>$advert]);
+        /* @var $paginator \Knp\Component\Pager\Paginator */
+        $paginator  = $this->get('knp_paginator');
+
+        // Paginate the results of the query
+        $appointments = $paginator->paginate(
+        // Doctrine Query, not results
+            $advert,
+            // Define the page parameter
+            $request->query->getInt('page', 1),
+            // Items per page
+            6
+        );
+        return $this->render('advert/list.html.twig',['advert'=>$appointments,'categorie'=>$categorie]);
+       // return new JsonResponse($advert);
+
     }
+
+
+    /**
+     * Recherche par region
+     * @Route("/annonces/region/{id}", name="annonce_region", requirements ={"id":"\d+"}, methods={"GET","POST"})
+     *
+     */
+
+    public function listParRegion($id,Request $request)
+    {
+        $advertRepository = $this->getDoctrine()->getRepository(Advert::class);
+        $advert = $advertRepository->findByRegionn($id);
+
+        //toutes les categorie
+        $categoriRepository = $this->getDoctrine()->getRepository(Categorie::class);
+        $categorie = $categoriRepository->findAll();
+        //toutes
+
+
+        //$question = $questionRepository->findAll();
+        /* @var $paginator \Knp\Component\Pager\Paginator */
+        $paginator  = $this->get('knp_paginator');
+
+        // Paginate the results of the query
+        $appointments = $paginator->paginate(
+        // Doctrine Query, not results
+            $advert,
+            // Define the page parameter
+            $request->query->getInt('page', 1),
+            // Items per page
+            6
+        );
+
+        return $this->render('advert/list.html.twig',['advert'=>$appointments,'categorie'=>$categorie] );
+    }
+
+    /**
+     * Recherche par categorie
+     * @Route("/annonces/categorie/{id}", name="annonce_categorie", requirements ={"id":"\d+"}, methods={"GET","POST"})
+     *
+     */
+
+    public function listParCategorie($id,Request $request,$prix)
+    {
+        $advertRepository = $this->getDoctrine()->getRepository(Advert::class);
+        $advert = $advertRepository->findByCategorie($id);
+
+        //toutes les categorie
+        $categoriRepository = $this->getDoctrine()->getRepository(Categorie::class);
+        $categorie = $categoriRepository->findAll();
+
+        //toutes
+        $priceRepository = $this->getDoctrine()->getRepository(Advert::class);
+        $prix =$priceRepository->findProductsExpensiveThan($prix);
+
+        //$question = $questionRepository->findAll();
+        /* @var $paginator \Knp\Component\Pager\Paginator */
+        $paginator  = $this->get('knp_paginator');
+
+        // Paginate the results of the query
+        $appointments = $paginator->paginate(
+        // Doctrine Query, not results
+            $advert,
+            // Define the page parameter
+            $request->query->getInt('page', 1),
+            // Items per page
+            6
+        );
+        return $this->render('advert/list.html.twig',['advert'=>$appointments,'categorie'=>$categorie,'prix'=>$prix] );
+    }
+
+    /**
+     * Recherche par categorie
+     * @Route("/annonces/price/{id}/{prix}", name="annonce_prix", requirements ={"id":"\d+"}, methods={"GET","POST"})
+     *
+     */
+
+    public function listParPrice($prix,Request $request,$id)
+    {
+        $advertRepository = $this->getDoctrine()->getRepository(Advert::class);
+        $advert = $advertRepository->findByCategorie($id);
+
+        //toutes les categorie
+        $categoriRepository = $this->getDoctrine()->getRepository(Categorie::class);
+        $categorie = $categoriRepository->findAll();
+
+        //toutes
+        $priceRepository = $this->getDoctrine()->getRepository(Advert::class);
+        $prix =$priceRepository->findProductsExpensiveThan($prix);
+
+        //$question = $questionRepository->findAll();
+        /* @var $paginator \Knp\Component\Pager\Paginator */
+        $paginator  = $this->get('knp_paginator');
+
+        // Paginate the results of the query
+        $appointments = $paginator->paginate(
+        // Doctrine Query, not results
+            $advert,
+            // Define the page parameter
+            $request->query->getInt('page', 1),
+            // Items per page
+            6
+        );
+        return $this->render('advert/list.html.twig',['advert'=>$appointments,'categorie'=>$categorie,'prix'=>$prix] );
+    }
+
 }

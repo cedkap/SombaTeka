@@ -66,6 +66,7 @@ class Advert
     private $Autre;
 
     /**
+     *
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Please, upload the product brochure as a PDF file.")
      * @Assert\File(mimeTypes={ "image/jpeg", "image/png", "image/gif" })
