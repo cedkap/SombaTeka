@@ -1,5 +1,182 @@
-{% for ress in res %}
-    {{ ress.Name}}
-    {{ ress.Categorie}}
-    {{ ress.Prix}}
-{% endfor %}
+{% extends 'base.html.twig' %}
+
+{% block content %}
+
+    <!-- Title Page -->
+    <section class="bg-title-page p-t-50 p-b-40 flex-col-c-m" style="background-image: url('{{ asset('images/heading-pages-02.jpg')}}');">
+        <h2 class="l-text2 t-center">
+            Women
+        </h2>
+        <p class="m-text13 t-center">
+            New Arrivals Women Collection 2018
+        </p>
+    </section>
+
+
+    <!-- Content page -->
+    <section class="bgwhite p-t-55 p-b-65">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 col-md-4 col-lg-3 p-b-50">
+                    <div class="leftbar p-r-20 p-r-0-sm">
+                        <!--  -->
+                        <h4 class="m-text14 p-b-7">
+                            Categories
+                        </h4>
+
+                        <ul class="p-b-54">
+                            <li class="p-t-4">
+                                <a href="{{ path('annonces_list') }}" class="s-text13 active1">
+                                    Toutes les annonces
+                                </a>
+                            </li>
+                            {% for categories in categorie %}
+                                <li class="p-t-4">
+                                    <a href="{{ path('annonce_categorie',{'id':categories.id}) }}" class="s-text13">
+                                        {{ categories.Name}}
+                                    </a>
+                                </li>
+                            {% endfor %}
+
+
+                        </ul>
+
+                        <!--  -->
+                        <h4 class="m-text14 p-b-32">
+                            Filters
+                        </h4>
+
+                        <form class="pull-right hidden" role="search" id="nav-search-form" method="post" action="{{ path('_search') }}">
+                            <div class="search-product pos-relative bo4 of-hidden">
+                                <input type="text" class="form-control" placeholder="Search" name ="search">
+
+
+                                </span>
+                            </div>
+
+                            <div class="rs2-select2 bo4 of-hidden w-size12 m-t-5 m-b-5 m-r-10">
+
+                                <select class="selection-2" name="sorting" >
+                                    <option>Toutes les categories</option>
+                                    {% for categories in categorie %}
+                                        <option value="{{ categories.Name}}">{{ categories.Name}}</option>
+                                    {% endfor %}
+                                </select>
+
+                            </div>
+                            <div class="rs2-select2 bo4 of-hidden w-size12 m-t-5 m-b-5 m-r-10">
+
+                                <select class="selection-2" name="region" >
+                                    <option>Toutes les regions</option>
+                                    {% for regions in region %}
+                                        <option value="{{ regions.Name}}">{{ regions.Name}}</option>
+                                    {% endfor %}
+                                </select>
+
+                            </div>
+                            <div class="rs2-select2 bo4 of-hidden w-size12 m-t-5 m-b-5 m-r-10">
+                                <select class="selection-2" name="price">
+                                    <option>Price</option>
+                                    <option value="500">$0.00 - $500.00</option>
+                                    <option value="1000">$500 - $1000</option>
+                                    <option value="1500">$1000 - $1500</option>
+                                    <option>$1500 - $2000</option>
+                                    <option>$2000+</option>
+
+                                </select>
+                            </div>
+                            <div class="rs2-select2 bo4 of-hidden w-size12 m-t-5 m-b-5 m-r-10">
+                                <select class="selection-2" name="sorting">
+                                    <option>Price</option>
+                                    <option>$0.00 - $50.00</option>
+                                    <option>$50.00 - $100.00</option>
+                                    <option>$100.00 - $150.00</option>
+                                    <option>$150.00 - $200.00</option>
+                                    <option>$200.00+</option>
+
+                                </select>
+                            </div>
+                            <!-- Button -->
+                            <button class="flex-c-m size4 bg7 bo-rad-15 hov1 s-text14 trans-0-4">
+                                Filter
+                            </button>
+                        </form>
+
+
+
+
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-md-8 col-lg-9 p-b-50">
+                    <!--  -->
+                    <div class="flex-sb-m flex-w p-b-35">
+                        <div class="flex-w">
+
+
+                            <div class="rs2-select2 bo4 of-hidden w-size12 m-t-5 m-b-5 m-r-10">
+                                <select class="selection-2" name="sorting">
+                                    <option>Price</option>
+                                    <option>$0.00 - $50.00</option>
+                                    <option>$50.00 - $100.00</option>
+                                    <option>$100.00 - $150.00</option>
+                                    <option>$150.00 - $200.00</option>
+                                    <option>$200.00+</option>
+
+                                </select>
+                            </div>
+                        </div>
+
+                        <span class="s-text8 p-t-5 p-b-5">
+							Showing 1–12 of 16 results
+						</span>
+                    </div>
+
+                    <!-- Product -->
+                    <div class="row">
+                        {% for adverts in advert %}
+                            <div class="col-sm-12 col-md-6 col-lg-4 p-b-50">
+                                <!-- Block2 -->
+                                <div class="block2">
+                                    <div class="block2-img wrap-pic-w of-hidden pos-relative block2-labelnew">
+                                        <a href="{{ path('annonce_detail',{'id':adverts.id}) }}">
+                                            <img src="{{ asset('uploads/brochures/' ~ adverts.Image) }}" alt="">
+                                        </a>
+
+
+                                        <div class="block2-overlay trans-0-4">
+                                            <div class="block2-btn-addcart w-size1 trans-0-4">
+                                                <!-- Button -->
+                                                <button class="flex-c-m size1 bg4 bo-rad-23 hov1 s-text1 trans-0-4">
+                                                    Voir les details
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="block2-txt p-t-20">
+                                        <a href="{{ path('annonce_detail',{'id':adverts.id}) }}" class="block2-name dis-block s-text3 p-b-5">
+                                            {{ adverts.Name}}
+                                        </a>
+
+                                        <span class="block2-price m-text6 p-r-5">
+										{{ adverts.Prix}} {{ adverts.Devise}}
+									</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="class="item-pagination flex-c-m trans-0-4 active-pagination">
+
+                    {{ knp_pagination_render(advert) }}
+
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+{% endblock %}

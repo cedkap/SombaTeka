@@ -98,22 +98,18 @@ class AdvertRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findBySearch($idannonce=null,$idcat=null)
+    public function findListCategorie($advert)
     {
-        // On passe par le QueryBuilder vide de l'EntityManager pour l'exemple
-        $result = $this->createQueryBuilder('a')
-            ->select('a')
-            ->where('IDENTITY(a.Region) = :id')
-             ->setParameter('id', $idannonce)
-           // ->andWhere('a.Prix > :purchasePrize')
-          //  ->setParameter( ':purchasePrize', 1000)
-
-            ->orderBy('a.id', 'DESC');
-        if ($idcat){
-            $result->andWhere('IDENTITY(a.Categorie) = :id')->setParameter('id', $idcat);
-        }
-        return $result->getQuery()
-            ->getResult();
+        $dql= "SELECT q,s
+                FROM App\Entity\Advert q
+                JOIN q.Categorie s
+                where q.id= :user
+                 ORDER BY q.id DESC";
+        $query = $this->getEntityManager()->createQuery($dql);
+        $query->setParameter(":user",$advert);
+        $query->setMaxResults(200);
+        $question= $query->getResult();
+        return $question;
     }
 
     public function findByCategorie($id)
@@ -122,7 +118,6 @@ class AdvertRepository extends ServiceEntityRepository
         $result = $this->createQueryBuilder('a')
             ->select('a')
             ->where('IDENTITY(a.Categorie) = :id')
-
             ->setParameter('id', $id)
             ->orderBy('a.id', 'DESC');
         return $result->getQuery()
@@ -131,21 +126,7 @@ class AdvertRepository extends ServiceEntityRepository
 
 
 
-    /**
-     * fetches Products that are more expansive than the given price
-     *
-     * @param int $price
-     * @return array
-     */
-    public function findProductsExpensiveThan($prix)
-    {
-        $q = $this->createQueryBuilder('p')
-            ->where('p.Prix > :purchasePrize')
-            ->setParameter('purchasePrize', $prix)
-            ->getQuery();
 
-        $q->getResult();
-    }
 
     //recherche par nom
     public function findByName($data)

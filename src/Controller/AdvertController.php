@@ -102,6 +102,10 @@ class AdvertController extends Controller
         $advertRepository = $this->getDoctrine()->getRepository(Advert::class);
         $advert = $advertRepository->find($id);
 
+        $advertCatRepository = $this->getDoctrine()->getRepository(Advert::class);
+        $advertCat = $advertCatRepository->findListCategorie($id);
+
+
         //Formulaire du messages
         //$question = new Question();
         $message =  new Messages();
@@ -124,7 +128,7 @@ class AdvertController extends Controller
             return $this->redirectToRoute('annonce_detail',['id'=>$advert->getId()]);
         }
 
-        return $this->render('advert/details.html.twig',['advert'=>$advert,'messageFrom'=>$messageForm->createView()] );
+        return $this->render('advert/details.html.twig',['advert'=>$advert,'messageFrom'=>$messageForm->createView(),'advertCat'=>$advertCat] );
     }
 
 
@@ -185,6 +189,7 @@ class AdvertController extends Controller
 
     public function listParRegion($id,Request $request)
     {
+        $data = $request->request->get('search');
         $advertRepository = $this->getDoctrine()->getRepository(Advert::class);
         $advert = $advertRepository->findByRegionn($id);
 
@@ -211,7 +216,7 @@ class AdvertController extends Controller
             6
         );
 
-        return $this->render('advert/list.html.twig',['advert'=>$appointments,'categorie'=>$categorie] );
+        return $this->render('advert/list.html.twig',['advert'=>$appointments,'categorie'=>$categorie,'region'=>$region] );
     }
 
     /**
@@ -220,7 +225,7 @@ class AdvertController extends Controller
      *
      */
 
-    public function listParCategorie($id,Request $request,$prix)
+    public function listParCategorie($id,Request $request)
     {
         $advertRepository = $this->getDoctrine()->getRepository(Advert::class);
         $advert = $advertRepository->findByCategorie($id);
@@ -233,48 +238,7 @@ class AdvertController extends Controller
         $regionRepository = $this->getDoctrine()->getRepository(Region::class);
         $region = $regionRepository->findAll();
 
-        //toutes
-        $priceRepository = $this->getDoctrine()->getRepository(Advert::class);
-        $prix =$priceRepository->findProductsExpensiveThan($prix);
 
-        //$question = $questionRepository->findAll();
-        /* @var $paginator \Knp\Component\Pager\Paginator */
-        $paginator  = $this->get('knp_paginator');
-
-        // Paginate the results of the query
-        $appointments = $paginator->paginate(
-        // Doctrine Query, not results
-            $advert,
-            // Define the page parameter
-            $request->query->getInt('page', 1),
-            // Items per page
-            6
-        );
-        return $this->render('advert/list.html.twig',['advert'=>$appointments,'categorie'=>$categorie,'prix'=>$prix] );
-    }
-
-    /**
-     * Recherche par categorie
-     * @Route("/annonces/price/{id}/{prix}", name="annonce_prix", requirements ={"id":"\d+"}, methods={"GET","POST"})
-     *
-     */
-
-    public function listParPrice($prix,Request $request,$id)
-    {
-        $advertRepository = $this->getDoctrine()->getRepository(Advert::class);
-        $advert = $advertRepository->findByCategorie($id);
-
-        //toutes les categorie
-        $categoriRepository = $this->getDoctrine()->getRepository(Categorie::class);
-        $categorie = $categoriRepository->findAll();
-
-        //toutes les Regions
-        $regionRepository = $this->getDoctrine()->getRepository(Region::class);
-        $region = $regionRepository->findAll();
-
-        //toutes
-        $priceRepository = $this->getDoctrine()->getRepository(Advert::class);
-        $prix =$priceRepository->findProductsExpensiveThan($prix);
 
         //$question = $questionRepository->findAll();
         /* @var $paginator \Knp\Component\Pager\Paginator */
@@ -304,6 +268,16 @@ class AdvertController extends Controller
         $searchCat =$request->request->get('sorting');
         $searchRegion =$request->request->get('region');
         $searchPrice =$request->request->get('price');
+
+        //toutes les categories
+        $categoriRepository = $this->getDoctrine()->getRepository(Categorie::class);
+        $categorie = $categoriRepository->findAll();
+
+        //toutes les Regions
+        $regionRepository = $this->getDoctrine()->getRepository(Region::class);
+        $region = $regionRepository->findAll();
+
+
         if (!empty($data)){
         $advertRepository = $this->getDoctrine()->getRepository(Advert::class);
         $res =$advertRepository->findByName($data);
@@ -321,7 +295,21 @@ class AdvertController extends Controller
             $res =$advertRepository->findByName($searchPrice);
         }
 
-        return $this->render('advert/search.html.twig', ['res' => $res]);
+        //$question = $questionRepository->findAll();
+        /* @var $paginator \Knp\Component\Pager\Paginator */
+        $paginator  = $this->get('knp_paginator');
+
+        // Paginate the results of the query
+        $appointments = $paginator->paginate(
+        // Doctrine Query, not results
+            $res,
+            // Define the page parameter
+            $request->query->getInt('page', 1),
+            // Items per page
+            6
+        );
+
+        return $this->render('advert/search.html.twig',['advert'=>$appointments,'categorie'=>$categorie,'region'=>$region]);
     }
 
 }
