@@ -147,4 +147,26 @@ class AdvertRepository extends ServiceEntityRepository
         $q->getResult();
     }
 
+    //recherche par nom
+    public function findByName($data)
+    {
+        $result = $this->createQueryBuilder('a')
+            ->select('a')
+            ->where('a.Name LIKE :data')
+           // ->orWhere('a.Prix LIKE :data')
+            ->orWhere('c.Name LIKE :data')
+            ->orWhere('r.Name LIKE :data')
+            //->orWhere('a.Prix >2000 ')
+           // ->orWhere('a.Prix <500 ')
+            ->orWhere('a.Prix BETWEEN 500 AND 1000 ')
+           //->orWhere('IDENTITY(a.Categorie) = :data')
+            //->orWhere('IDENTITY(a.Region) LIKE :data')
+            ->join('a.Categorie','c')
+            ->join('a.Region','r')
+            ->setParameter('data', $data);
+
+        return $result->getQuery()
+            ->getResult();;
+    }
+
 }

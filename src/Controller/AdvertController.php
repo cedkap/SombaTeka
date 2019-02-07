@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Advert;
 use App\Entity\Categorie;
 use App\Entity\Messages;
+use App\Entity\Region;
 use App\Form\AdvertType;
 use App\Form\MessageType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -148,8 +149,14 @@ class AdvertController extends Controller
             0
         );
 
+        //toutes les categories
         $categoriRepository = $this->getDoctrine()->getRepository(Categorie::class);
         $categorie = $categoriRepository->findAll();
+
+        //toutes les Regions
+        $regionRepository = $this->getDoctrine()->getRepository(Region::class);
+        $region = $regionRepository->findAll();
+
 
         //$question = $questionRepository->findAll();
         /* @var $paginator \Knp\Component\Pager\Paginator */
@@ -164,7 +171,7 @@ class AdvertController extends Controller
             // Items per page
             6
         );
-        return $this->render('advert/list.html.twig',['advert'=>$appointments,'categorie'=>$categorie]);
+        return $this->render('advert/list.html.twig',['advert'=>$appointments,'categorie'=>$categorie,'region'=>$region]);
        // return new JsonResponse($advert);
 
     }
@@ -184,7 +191,10 @@ class AdvertController extends Controller
         //toutes les categorie
         $categoriRepository = $this->getDoctrine()->getRepository(Categorie::class);
         $categorie = $categoriRepository->findAll();
-        //toutes
+
+        //toutes les Regions
+        $regionRepository = $this->getDoctrine()->getRepository(Region::class);
+        $region = $regionRepository->findAll();
 
 
         //$question = $questionRepository->findAll();
@@ -218,6 +228,10 @@ class AdvertController extends Controller
         //toutes les categorie
         $categoriRepository = $this->getDoctrine()->getRepository(Categorie::class);
         $categorie = $categoriRepository->findAll();
+
+        //toutes les Regions
+        $regionRepository = $this->getDoctrine()->getRepository(Region::class);
+        $region = $regionRepository->findAll();
 
         //toutes
         $priceRepository = $this->getDoctrine()->getRepository(Advert::class);
@@ -254,6 +268,10 @@ class AdvertController extends Controller
         $categoriRepository = $this->getDoctrine()->getRepository(Categorie::class);
         $categorie = $categoriRepository->findAll();
 
+        //toutes les Regions
+        $regionRepository = $this->getDoctrine()->getRepository(Region::class);
+        $region = $regionRepository->findAll();
+
         //toutes
         $priceRepository = $this->getDoctrine()->getRepository(Advert::class);
         $prix =$priceRepository->findProductsExpensiveThan($prix);
@@ -271,7 +289,39 @@ class AdvertController extends Controller
             // Items per page
             6
         );
-        return $this->render('advert/list.html.twig',['advert'=>$appointments,'categorie'=>$categorie,'prix'=>$prix] );
+        return $this->render('advert/list.html.twig',['advert'=>$appointments,'categorie'=>$categorie,'region'=>$region] );
+    }
+
+    /**
+     * Recherche par categorie
+     * @Route("/recherche", name="_search", requirements ={"id":"\d+"}, methods={"GET","POST"})
+     *
+     */
+    public function searchAction(Request $request)
+    {
+        //$request = $this->getRequest();
+        $data = $request->request->get('search');
+        $searchCat =$request->request->get('sorting');
+        $searchRegion =$request->request->get('region');
+        $searchPrice =$request->request->get('price');
+        if (!empty($data)){
+        $advertRepository = $this->getDoctrine()->getRepository(Advert::class);
+        $res =$advertRepository->findByName($data);
+        }
+        if (!empty($searchCat)){
+            $advertRepository = $this->getDoctrine()->getRepository(Advert::class);
+            $res =$advertRepository->findByName($searchCat);
+        }
+        if (!empty($searchRegion)){
+            $advertRepository = $this->getDoctrine()->getRepository(Advert::class);
+            $res =$advertRepository->findByName($searchRegion);
+        }
+        if (!empty($searchPrice)){
+            $advertRepository = $this->getDoctrine()->getRepository(Advert::class);
+            $res =$advertRepository->findByName($searchPrice);
+        }
+
+        return $this->render('advert/search.html.twig', ['res' => $res]);
     }
 
 }
