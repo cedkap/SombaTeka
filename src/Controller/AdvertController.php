@@ -103,7 +103,7 @@ class AdvertController extends Controller
         $advert = $advertRepository->find($id);
 
         $advertCatRepository = $this->getDoctrine()->getRepository(Advert::class);
-        $advertCat = $advertCatRepository->findListCategorie($id);
+        $advertCat = $advertCatRepository->findByRegiionAct();
 
 
         //Formulaire du messages
@@ -267,7 +267,11 @@ class AdvertController extends Controller
         $data = $request->request->get('search');
         $searchCat =$request->request->get('sorting');
         $searchRegion =$request->request->get('region');
-        $searchPrice =$request->request->get('price');
+        $searchPriceMin =$request->request->get('priceMin');
+        $searchPriceMax =$request->request->get('priceMax');
+        //echo $searchPriceMax .'-'.$searchPriceMin.'  ';
+        //var_dump($searchPriceMin);
+       // var_dump($searchPriceMax);
 
         //toutes les categories
         $categoriRepository = $this->getDoctrine()->getRepository(Categorie::class);
@@ -278,11 +282,13 @@ class AdvertController extends Controller
         $region = $regionRepository->findAll();
 
 
-        if (!empty($data)){
+
         $advertRepository = $this->getDoctrine()->getRepository(Advert::class);
-        $res =$advertRepository->findByName($data);
-        }
-        if (!empty($searchCat)){
+        $res =$advertRepository->findByName($data,$searchCat,$searchRegion,$searchPriceMin,$searchPriceMax);
+
+
+
+       /* if (!empty($searchCat)){
             $advertRepository = $this->getDoctrine()->getRepository(Advert::class);
             $res =$advertRepository->findByName($searchCat);
         }
@@ -293,23 +299,14 @@ class AdvertController extends Controller
         if (!empty($searchPrice)){
             $advertRepository = $this->getDoctrine()->getRepository(Advert::class);
             $res =$advertRepository->findByName($searchPrice);
-        }
+
+        }*/
 
         //$question = $questionRepository->findAll();
         /* @var $paginator \Knp\Component\Pager\Paginator */
-        $paginator  = $this->get('knp_paginator');
+//dd($res);
 
-        // Paginate the results of the query
-        $appointments = $paginator->paginate(
-        // Doctrine Query, not results
-            $res,
-            // Define the page parameter
-            $request->query->getInt('page', 1),
-            // Items per page
-            6
-        );
-
-        return $this->render('advert/search.html.twig',['advert'=>$appointments,'categorie'=>$categorie,'region'=>$region]);
+        return $this->render('advert/search.html.twig',['advert'=>$res,'categorie'=>$categorie,'region'=>$region]);
     }
 
 }

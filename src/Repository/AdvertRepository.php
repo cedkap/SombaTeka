@@ -98,16 +98,29 @@ class AdvertRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findByRegiionAct()
+    {
+        // select * from advert, region where advert.region_id =region.id
+        $dql= "SELECT q
+                FROM App\Entity\Advert q
+                 ORDER BY q.id DESC";
+        $query = $this->getEntityManager()->createQuery($dql);
+        $query->setMaxResults(10);
+        $question= $query->getResult();
+        return $question;
+    }
+
     public function findListCategorie($advert)
     {
         $dql= "SELECT q,s
                 FROM App\Entity\Advert q
                 JOIN q.Categorie s
                 where q.id= :user
+                
                  ORDER BY q.id DESC";
         $query = $this->getEntityManager()->createQuery($dql);
         $query->setParameter(":user",$advert);
-        $query->setMaxResults(200);
+        $query->setMaxResults(4);
         $question= $query->getResult();
         return $question;
     }
@@ -129,25 +142,36 @@ class AdvertRepository extends ServiceEntityRepository
 
 
     //recherche par nom
-    public function findByName($data)
+    public function findByName($data,$searchCat,$searchRegion,$searchPriceMin,$searchPriceMax)
     {
-        $result = $this->createQueryBuilder('a')
-            ->select('a')
-            ->where('a.Name LIKE :data')
-           // ->orWhere('a.Prix LIKE :data')
-            ->orWhere('c.Name LIKE :data')
-            ->orWhere('r.Name LIKE :data')
-            //->orWhere('a.Prix >2000 ')
-           // ->orWhere('a.Prix <500 ')
-            ->orWhere('a.Prix BETWEEN 500 AND 1000 ')
-           //->orWhere('IDENTITY(a.Categorie) = :data')
-            //->orWhere('IDENTITY(a.Region) LIKE :data')
-            ->join('a.Categorie','c')
-            ->join('a.Region','r')
-            ->setParameter('data', $data);
-
-        return $result->getQuery()
-            ->getResult();;
+        $result = $this->createQueryBuilder('a')->select('a');
+        //dump($searchPriceMin);
+       // dump($searchPriceMax);
+        if (!empty($data)){
+            $result->where('a.Name LIKE :data')
+                ->orWhere('a.Prix LIKE :data')
+               ->orWhere('c.Name LIKE :data')
+                ->orWhere('r.Name LIKE :data')
+                ->setParameter('data', "%".$data."%");
+        }
+        if (!empty($searchCat)){
+            $result->andWhere('c.Name LIKE :searchCat')
+            ->setParameter('searchCat', $searchCat);
+        }
+        if (!empty($searchRegion )){
+            $result->andWhere('r.Name LIKE :searchRegion')
+                ->setParameter('searchRegion', $searchRegion);
+        }
+        if (!empty($searchPriceMin) || !empty($searchPriceMax)){
+            $result->andWhere('a.Prix BETWEEN :searchPriceMin AND :searchPriceMax ')
+            ->setParameter('searchPriceMax', $searchPriceMax)
+            ->setParameter('searchPriceMin', $searchPriceMin);
+        }
+        $result->leftJoin('a.Categorie','c');
+        $result->leftJoin('a.Region','r');
+//echo $result->getQuery()->getSQL();
+//echo $result;
+        return $result->getQuery()->getResult();
     }
 
 }

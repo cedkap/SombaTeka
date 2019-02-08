@@ -57,7 +57,7 @@
                             <div class="rs2-select2 bo4 of-hidden w-size12 m-t-5 m-b-5 m-r-10">
 
                                 <select class="selection-2" name="sorting" >
-                                    <option>Toutes les categories</option>
+                                    <option value=" ">Toutes les categories</option>
                                     {% for categories in categorie %}
                                         <option value="{{ categories.Name}}">{{ categories.Name}}</option>
                                     {% endfor %}
@@ -67,7 +67,7 @@
                             <div class="rs2-select2 bo4 of-hidden w-size12 m-t-5 m-b-5 m-r-10">
 
                                 <select class="selection-2" name="region" >
-                                    <option>Toutes les regions</option>
+                                    <option value=" ">Toutes les regions</option>
                                     {% for regions in region %}
                                         <option value="{{ regions.Name}}">{{ regions.Name}}</option>
                                     {% endfor %}
@@ -75,25 +75,25 @@
 
                             </div>
                             <div class="rs2-select2 bo4 of-hidden w-size12 m-t-5 m-b-5 m-r-10">
-                                <select class="selection-2" name="price">
-                                    <option>Price</option>
-                                    <option value="500">$0.00 - $500.00</option>
-                                    <option value="1000">$500 - $1000</option>
-                                    <option value="1500">$1000 - $1500</option>
-                                    <option>$1500 - $2000</option>
-                                    <option>$2000+</option>
+                                <select class="selection-2" name="priceMin">
+                                    <option value="0">Price</option>
+                                    <option value="0">0$</option>
+                                    <option value="500">$500</option>
+                                    <option value="1000">$1000</option>
+                                    <option value="1500">$1500</option>
+                                    <option value="2000">$2000</option>
+
 
                                 </select>
                             </div>
                             <div class="rs2-select2 bo4 of-hidden w-size12 m-t-5 m-b-5 m-r-10">
-                                <select class="selection-2" name="sorting">
-                                    <option>Price</option>
-                                    <option>$0.00 - $50.00</option>
-                                    <option>$50.00 - $100.00</option>
-                                    <option>$100.00 - $150.00</option>
-                                    <option>$150.00 - $200.00</option>
-                                    <option>$200.00+</option>
-
+                                <select class="selection-2" name="priceMax">
+                                    <option value="0">Price</option>
+                                    <option value="0">0$</option>
+                                    <option value="500">$500</option>
+                                    <option value="1000">$1000 </option>
+                                    <option value="1500">$1500</option>
+                                    <option value="2000">$2000</option>
                                 </select>
                             </div>
                             <!-- Button -->
@@ -128,7 +128,7 @@
                         </div>
 
                         <span class="s-text8 p-t-5 p-b-5">
-							Showing 1–12 of 16 results
+							Showing 1–12 of {{ advert|length }} results
 						</span>
                     </div>
 
@@ -171,7 +171,7 @@
                     <!-- Pagination -->
                     <div class="class="item-pagination flex-c-m trans-0-4 active-pagination">
 
-                    {{ knp_pagination_render(advert) }}
+
 
                 </div>
             </div>

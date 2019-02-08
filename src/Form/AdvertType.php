@@ -8,6 +8,7 @@ use App\Entity\Region;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\DataTransformer\ArrayToPartsTransformer;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -22,7 +23,10 @@ class AdvertType extends AbstractType
         $builder
             ->add('Name',textType::class,["label" =>"Nom du produit", "attr" => [ "class" =>"pouf"]])
             ->add('Description',textAreaType::class)
-            ->add('Devise')
+            ->add('Devise',ChoiceType::class,['choices'  => [
+                'USD' => 'USD',
+                'EUR' => 'EUR',
+            ]])
             ->add('Prix',textType::class,["label" =>"votre prix", "attr" => [ "class" =>"pouf"]])
             ->add('Autre',textType::class,["label" =>"Autre information ", "attr" => [ "class" =>"pouf"]])
             ->add('Image',FileType::class, ['label' => 'Deposer une image '])
